@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculator</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(135deg, #141E30, #243B55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calculator {
+  width: 360px;
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+.display {
+  height: 70px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1.8rem;
+  text-align: right;
+  padding: 15px;
+  overflow-x: auto;
+}
+
+.mode {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.mode button {
+  background: #1abc9c;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+button {
+  height: 55px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: #fff;
+  background: rgba(255,255,255,0.18);
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.operator {
+  background: #f39c12;
+}
+
+.equal {
+  background: #2ecc71;
+  grid-column: span 2;
+}
+
+.clear {
+  background: #e74c3c;
+}
+
+.scientific {
+  display: none;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.scientific button {
+  background: rgba(52, 152, 219, 0.8);
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+  <div class="display" id="display">0</div>
+
+  <div class="mode">
+    <button id="toggle">Scientific Mode</button>
+  </div>
+
+  <div class="scientific" id="scientific">
+    <button>sin</button>
+    <button>cos</button>
+    <button>tan</button>
+    <button>√</button>
+
+    <button>log</button>
+    <button>ln</button>
+    <button>x²</button>
+    <button>^</button>
+
+    <button>π</button>
+    <button>e</button>
+    <button>(</button>
+    <button>)</button>
+  </div>
+
+  <div class="buttons">
+    <button class="clear">C</button>
+    <button>⌫</button>
+    <button class="operator">÷</button>
+    <button class="operator">×</button>
+
+    <button>7</button>
+    <button>8</button>
+    <button>9</button>
+    <button class="operator">−</button>
+
+    <button>4</button>
+    <button>5</button>
+    <button>6</button>
+    <button class="operator">+</button>
+
+    <button>1</button>
+    <button>2</button>
+    <button>3</button>
+    <button>.</button>
+
+    <button>0</button>
+    <button class="equal">=</button>
+  </div>
+</div>
+
+<script>
+const display = document.getElementById("display");
+const toggle = document.getElementById("toggle");
+const scientific = document.getElementById("scientific");
+const buttons = document.querySelectorAll("button");
+
+let input = "";
+
+toggle.onclick = () => {
+  scientific.style.display =
+    scientific.style.display === "grid" ? "none" : "grid";
+  toggle.textContent =
+    scientific.style.display === "grid"
+      ? "Standard Mode"
+      : "Scientific Mode";
+};
+
+buttons.forEach(btn => {
+  btn.onclick = () => {
+    const value = btn.textContent;
+
+    if (value === "C") {
+      input = "";
+      display.textContent = "0";
+      return;
+    }
+
+    if (value === "⌫") {
+      input = input.slice(0, -1);
+      display.textContent = input || "0";
+      return;
+    }
+
+    if (value === "=") {
+      try {
+        let expression = input
+          .replace(/×/g, "*")
+          .replace(/÷/g, "/")
+          .replace(/−/g, "-")
+          .replace(/π/g, "Math.PI")
+          .replace(/e/g, "Math.E")
+          .replace(/sin/g, "Math.sin")
+          .replace(/cos/g, "Math.cos")
+          .replace(/tan/g, "Math.tan")
+          .replace(/log/g, "Math.log10")
+          .replace(/ln/g, "Math.log")
+          .replace(/√/g, "Math.sqrt")
+          .replace(/x²/g, "**2")
+          .replace(/\^/g, "**");
+
+        input = eval(expression).toString();
+        display.textContent = input;
+      } catch {
+        display.textContent = "Error";
+        input = "";
+      }
+      return;
+    }
+
+    input += value;
+    display.textContent = input;
+  };
+});
+</script>
+
+</body>
+</html>
